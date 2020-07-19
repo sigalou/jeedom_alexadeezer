@@ -111,21 +111,28 @@ var str=data.logicalId
 <?php
 foreach($eqLogics as $eqLogic) {
 
+$datetimecreation = new DateTime($eqLogic->getConfiguration('createtime'));
+$datetimeaujourdhui = new DateTime(date('Y-m-d'));
+$interval = $datetimecreation->diff($datetimeaujourdhui);
+
 	if ($eqLogic->getConfiguration('devicetype') == "Player") {
 
 		$opacity = ($eqLogic->getIsEnable()) ? '' : ' disableCard';
 		echo '<div class="eqLogicDisplayCard cursor second '.$opacity.'" data-eqLogic_id="'.$eqLogic->getId().'" >';
 
+	
 		if (($eqLogic->getStatus('online') != 'true')){
-			echo '<i class="fas fa-power-off" style="color: red;text-shadow: 4px 4px 4px #ccc;float:right" title="Offline"></i>';
+				//echo '<i class="fas fa-power-off" style="color: red;text-shadow: 4px 4px 4px #ccc;float:right" title="Offline"></i>';
+				echo '<span class="badge badge-danger">Off</span>';
+		} elseif (($eqLogic->getStatus('Playing') == 'true')) {
+				echo '<i class="fas loisir-musical7" style="color: #2c8af6;text-shadow: 4px 4px 4px #ccc;float:right" title="Playing"></i>';
+		} else {
+			if ($interval->format('%a') <1) {
+				echo '<span class="badge badge-success">Nouveau</span>';
+			}
 		}
-		else {
-				if (($eqLogic->getStatus('Playing') == 'true'))
-					echo '<i class="fas loisir-musical7" style="color: #2c8af6;text-shadow: 4px 4px 4px #ccc;float:right" title="Playing"></i>';
-					//echo '<i class="fa fa-play" style="color: green;text-shadow: 4px 4px 4px #ccc;float:right" title="Playing"></i>';
-				//else
-					//echo '<i class="fas loisir-musical7" style="color: #2c8af6;text-shadow: 4px 4px 4px #ccc;float:right" title="Offline"></i>'; // Dire que c'est un Player
-		}
+		
+		
 
 		$alternateImg = $eqLogic->getConfiguration('type');
 		if (file_exists(dirname(__FILE__).'/../../../alexaapi/core/config/devices/'.$alternateImg.'.png'))
@@ -352,6 +359,7 @@ foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value)
 </div>
 
 <?php include_file('desktop', 'alexadeezer', 'js', 'alexadeezer'); ?>
+<?php include_file('desktop', 'alexaapi', 'css', 'alexaapi'); ?>
 <?php include_file('core', 'plugin.template', 'js'); ?>
 <script>
 $('#in_searchEqlogic').off('keyup').keyup(function () {

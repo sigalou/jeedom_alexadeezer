@@ -4,7 +4,8 @@ require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 class alexadeezer extends eqLogic {
 	
 	public static function cron($_eqlogic_id = null) {
-		$r = new Cron\CronExpression('*/15 * * * *', new Cron\FieldFactory);// boucle refresh
+		$deamon_info = alexaapi::deamon_info();
+		$r = new Cron\CronExpression('*/17 * * * *', new Cron\FieldFactory);// boucle refresh
 		if ($r->isDue() && $deamon_info['state'] == 'ok') {
 			$eqLogics = ($_eqlogic_id !== null) ? array(eqLogic::byId($_eqlogic_id)) : eqLogic::byType('alexadeezer', true);
 			foreach ($eqLogics as $alexadeezer) {
@@ -67,7 +68,7 @@ class alexadeezer extends eqLogic {
 		$device=str_replace("_player", "", $this->getConfiguration('serial'));
 
 		if ($widgetPlayer) {	// Refresh d'un player
-			$url = network::getNetworkAccess('internal'). "/plugins/alexaapi/core/php/jeealexaapi.php?apikey=".jeedom::getApiKey('alexaapi')."&nom=refreshPlayer"; // Envoyer la commande Refresh 
+			$url = network::getNetworkAccess('internal'). "/plugins/alexaapi/core/php/jeeAlexaapi.php?apikey=".jeedom::getApiKey('alexaapi')."&nom=refreshPlayer"; // Envoyer la commande Refresh 
 			$ch = curl_init($url);
 			$data = array(
 				'deviceSerialNumber' => $device,
@@ -411,7 +412,7 @@ class alexadeezerCmd extends cmd {
 			$request_http->exec(0.1, 1);
 			return;
 		}
-		$result = $request_http->exec($this->getConfiguration('timeout', 3), $this->getConfiguration('maxHttpRetry', 3));//Time out à 3s 3 essais
+		$result = $request_http->exec(10,3);//Time out à 10s 3 essais Modifié 04/07/2020
 		if (!$result) throw new Exception(__('Serveur injoignable', __FILE__));
 		// On traite la valeur de resultat (dans le cas de whennextalarm par exemple)
 		$resultjson = json_decode($result, true);
@@ -429,7 +430,7 @@ class alexadeezerCmd extends cmd {
 							flush();
 							}	
 						log::add('alexadeezer', 'debug', '**On relance '.$request);
-						$result = $request_http->exec($this->getConfiguration('timeout', 2), $this->getConfiguration('maxHttpRetry', 3));
+						$result = $request_http->exec(10,3);//Time out à 10s 3 essais Modifié 04/07/2020
 						if (!result) throw new Exception(__('Serveur injoignable', __FILE__));
 						$jsonResult = json_decode($json, true);
 						if (!empty($jsonResult)) throw new Exception(__('Echec de l\'execution: ', __FILE__) . '(' . $jsonResult['title'] . ') ' . $jsonResult['detail']);
