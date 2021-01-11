@@ -3,6 +3,10 @@ require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
 class alexadeezer extends eqLogic {
 	
+		/*     * *************************Attributs pour autoriser les onglets Affichage et Disposition****************************** */
+	public static $_widgetPossibility = array('custom' => true, 'custom::layout' => true);
+	
+	
 	public static function cron($_eqlogic_id = null) {
 		$deamon_info = alexaapi::deamon_info();
 		$r = new Cron\CronExpression('*/17 * * * *', new Cron\FieldFactory);// boucle refresh
