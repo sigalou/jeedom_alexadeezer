@@ -145,6 +145,8 @@ class alexadeezer extends eqLogic {
 					if (!empty($listValue)) $cmd->setConfiguration('listValue', $listValue);
 					$cmd->setConfiguration('RunWhenRefresh', $RunWhenRefresh);				
 					$cmd->setDisplay('title_disable', $title_disable);
+					$cmd->setDisplay('showNameOndashboard', !$title_disable);
+					
 					$cmd->setOrder($Order);
 					//cas particulier
 						if (($LogicalId == 'speak') || ($LogicalId == 'announcement')){
