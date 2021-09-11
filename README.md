@@ -1,1 +1,1 @@
-# jeedom_alexaspotify
+# jeedom_alexadeezer
