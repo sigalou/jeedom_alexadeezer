@@ -330,15 +330,16 @@ class alexadeezer extends eqLogic {
 
   public function toHtml($_version = 'dashboard') {
 	$replace = $this->preToHtml($_version);
+	if (!is_array($replace)) {
+		return $replace;
+	}	  
 	//log::add('alexadeezer_widget','debug','************Début génération Widget de '.$replace['#logicalId#']);  
 	$typeWidget="alexaapi";	
 	if ((substr($replace['#logicalId#'], -7))=="_player") $typeWidget="alexaapi_player";
 	if ((substr($replace['#logicalId#'], -9))=="_playlist") $typeWidget="alexaapi_playlist";
     if ($typeWidget!="alexaapi_playlist") return parent::toHtml($_version);
 	//log::add('alexadeezer_widget','debug',$typeWidget.'************Début génération Widget de '.$replace['#name#']);        
-	if (!is_array($replace)) {
-		return $replace;
-	}
+
 	$version = jeedom::versionAlias($_version);
 	if ($this->getDisplay('hideOn' . $version) == 1) {
 		return '';
